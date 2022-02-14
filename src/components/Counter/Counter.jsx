@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useReducer } from 'react'
 
 const pinkRGB = `rgb(236, 72, 153)`
 const initialItem = { currentColor: pinkRGB, count: 0 }
