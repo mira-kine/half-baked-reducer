@@ -1,35 +1,63 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 
-const pinkRGB = `rgb(236, 72, 153)`
+const initialItem = { color, count: 0 }
+
+
+function getColor(color) {
+  if (count === 0) {
+    setCurrentColor(pinkRGB)
+  }
+  
+  if (count > 0) {
+    setCurrentColor(`rgb(52, 211, 153)`)
+  }
+  
+  if (count < 0) {
+    setCurrentColor(`rgb(239, 68, 68)`)
+  }
+}, [count])
+
+function colorReducer(color, action) {
+  switch (action.type) {
+    case 'positive': {
+      return [
+        {
+          color: `rgb(52, 211, 153)`,
+        },
+      ]
+    }
+    case 'negative': {
+      return [
+        {
+          color: `rgb(239, 68, 68)`,
+        },
+      ]
+    }
+    default: {
+      throw Error(`Unknown action: ${action.type}`)
+    }
+  }
+}
 
 export default function Counter() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
   const [currentColor, setCurrentColor] = useState(pinkRGB)
+  const [count, dispatch] = useReducer(countReducer, initialItem)
+  // const [color, dispatch] = useReducer(colorReducer, initialItem)
 
-  useEffect(() => {
-    if (count === 0) {
-      setCurrentColor(pinkRGB)
-    }
-
-    if (count > 0) {
-      setCurrentColor(`rgb(52, 211, 153)`)
-    }
-
-    if (count < 0) {
-      setCurrentColor(`rgb(239, 68, 68)`)
-    }
-  }, [count])
 
   const increment = () => {
-    setCount((prevState) => prevState + 1)
+    dispatch({
+      type: 'count',
+    })
   }
 
   const decrement = () => {
-    setCount((prevState) => prevState - 1)
+    // setCount((prevState) => prevState - 1)
   }
 
   const reset = () => {
-    setCount(0)
+    // setCount(0)
   }
 
   return (
