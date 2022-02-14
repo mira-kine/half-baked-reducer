@@ -1,69 +1,70 @@
 import { useEffect, useReducer, useState } from 'react'
 
-const initialItem = { color, count: 0 }
+const pinkRGB = `rgb(236, 72, 153)`
+const initialItem = { currentColor: pinkRGB, count: 0 }
 
-
-function getColor(color) {
+function getColor(count) {
   if (count === 0) {
-    setCurrentColor(pinkRGB)
+    return pinkRGB
   }
-  
-  if (count > 0) {
-    setCurrentColor(`rgb(52, 211, 153)`)
-  }
-  
-  if (count < 0) {
-    setCurrentColor(`rgb(239, 68, 68)`)
-  }
-}, [count])
 
-function colorReducer(color, action) {
-  switch (action.type) {
-    case 'positive': {
-      return [
-        {
-          color: `rgb(52, 211, 153)`,
-        },
-      ]
-    }
-    case 'negative': {
-      return [
-        {
-          color: `rgb(239, 68, 68)`,
-        },
-      ]
-    }
+  if (count > 0) {
+    return `rgb(52, 211, 153)`
+  }
+
+  if (count < 0) {
+    return `rgb(239, 68, 68)`
+  }
+
+  return pinkRGB
+}
+
+function colorReducer(state, { type }) {
+  const currentColor = getColor(state.count)
+  switch (type) {
+    case 'increment':
+      return {
+        currentColor: getColor(state.count + 1),
+        count: state.count + 1,
+      }
+    case 'decrement':
+      return {
+        currentColor: getColor(state.count - 1),
+        count: state.count - 1,
+      }
+    case 'reset':
+      return { currentColor: pinkRGB, count: 0 }
     default: {
-      throw Error(`Unknown action: ${action.type}`)
+      throw Error(`Unknown action: ${type}`)
     }
   }
 }
 
 export default function Counter() {
-  // const [count, setCount] = useState(0)
-  const [currentColor, setCurrentColor] = useState(pinkRGB)
-  const [count, dispatch] = useReducer(countReducer, initialItem)
-  // const [color, dispatch] = useReducer(colorReducer, initialItem)
-
+  const [count, dispatch] = useReducer(colorReducer, initialItem)
 
   const increment = () => {
     dispatch({
-      type: 'count',
+      type: 'increment',
     })
   }
 
   const decrement = () => {
-    // setCount((prevState) => prevState - 1)
+    dispatch({
+      type: 'decrement',
+    })
   }
 
   const reset = () => {
-    // setCount(0)
+    dispatch({
+      type: 'reset',
+    })
   }
 
   return (
     <main className="bg-black bg-opacity-90 min-h-screen flex flex-col items-center justify-center text-4xl text-pink-500">
-      <h1 className="mb-5" style={{ color: currentColor }}>
-        {count}
+      <h1 className="mb-5" style={{ color: count.currentColor }}>
+        {count.count}
       </h1>
       <div className="flex w-1/2 justify-around">
         <button
